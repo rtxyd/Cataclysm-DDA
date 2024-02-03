@@ -1440,9 +1440,9 @@ bool game::cancel_activity_or_ignore_query( const distraction_type type, const s
                                 .context( "CANCEL_ACTIVITY_OR_IGNORE_QUERY" )
                                 .message( force_uc && !is_keycode_mode_supported() ?
                                           pgettext( "cancel_activity_or_ignore_query",
-                                                  "<color_light_red>%s %s (Case Sensitive)</color>" ) :
+                                              "<color_light_red>%s %s (Case Sensitive)</color>" ) :
                                           pgettext( "cancel_activity_or_ignore_query",
-                                                  "<color_light_red>%s %s</color>" ),
+                                              "<color_light_red>%s %s</color>" ),
                                           text, u.activity.get_stop_phrase() )
                                 .option( "YES", allow_key )
                                 .option( "NO", allow_key )
@@ -2092,7 +2092,7 @@ int game::inventory_item_menu( item_location locThisItem,
 
                 action_menu.w_y_setup = 0;
                 action_menu.w_x_setup = [&]( const int popup_width ) -> int {
-                    switch( position )
+                    switch( position ) 
                     {
                         default:
                         case RIGHT_TERMINAL_EDGE:
@@ -3139,7 +3139,7 @@ bool game::load( const save_t &name )
                         // The vehicle stores the IDs of the boarded players, so update it, too.
                         if( u.in_vehicle ) {
                             if( const std::optional<vpart_reference> vp = m.veh_at(
-                                        u.pos() ).part_with_feature( "BOARDABLE", true ) ) {
+                                    u.pos() ).part_with_feature( "BOARDABLE", true ) ) {
                                 vp->part().passenger_id = u.getID();
                             }
                         }
@@ -3368,7 +3368,7 @@ bool game::save_achievements()
             return !std::isgraph( c, locale );
         }, '_' );
     } else {
-        achievement_file_path << u.name;
+        achievement_file_path << base64_encode( u.name );
     }
 
     // Add a ~ if the player name was actually truncated.
@@ -3500,7 +3500,7 @@ void game::write_memorial_file( std::string sLastWords )
 {
     const std::string &memorial_dir = PATH_INFO::memorialdir();
     const std::string &memorial_active_world_dir = memorial_dir +
-            world_generator->active_world->world_name + "/";
+        world_generator->active_world->world_name + "/";
 
     //Check if both dirs exist. Nested assure_dir_exist fails if the first dir of the nested dir does not exist.
     if( !assure_dir_exist( memorial_dir ) ) {
@@ -3537,7 +3537,7 @@ void game::write_memorial_file( std::string sLastWords )
             return !std::isgraph( c, locale );
         }, '_' );
     } else {
-        memorial_file_path << u.name;
+        memorial_file_path << base64_encode( u.name );
     }
 
     // Add a ~ if the player name was actually truncated.
@@ -3800,12 +3800,12 @@ void game::draw_callback_t::operator()()
 void game::add_draw_callback( const shared_ptr_fast<draw_callback_t> &cb )
 {
     draw_callbacks.erase(
-        std::remove_if( draw_callbacks.begin(), draw_callbacks.end(),
+                      std::remove_if( draw_callbacks.begin(), draw_callbacks.end(),
     []( const weak_ptr_fast<draw_callback_t> &cbw ) {
         return cbw.expired();
     } ),
     draw_callbacks.end()
-    );
+                  );
     draw_callbacks.emplace_back( cb );
     cb->added = true;
     invalidate_main_ui_adaptor();
@@ -7040,7 +7040,7 @@ void game::zones_manager()
     bool zone_blink = false;
     bool zone_cursor = false;
     shared_ptr_fast<draw_callback_t> zone_cb = create_zone_callback(
-                zone_start, zone_end, zone_blink, zone_cursor );
+            zone_start, zone_end, zone_blink, zone_cursor );
     add_draw_callback( zone_cb );
 
     // This lambda returns either absolute coordinates or relative-to-player
@@ -7074,7 +7074,7 @@ void game::zones_manager()
             popup.message( "%s", _( "Select second point." ) );
 
             const look_around_result second = look_around( /*show_window=*/false, center, *first.position,
-                    true, true, false );
+                true, true, false );
             if( second.position ) {
                 if( personal ) {
                     tripoint first_rel(
@@ -7753,7 +7753,7 @@ look_around_result game::look_around(
     bool zone_blink = false;
     bool zone_cursor = true;
     shared_ptr_fast<draw_callback_t> zone_cb = create_zone_callback( zone_start, zone_end, zone_blink,
-            zone_cursor, is_moving_zone );
+        zone_cursor, is_moving_zone );
     add_draw_callback( zone_cb );
 
     is_looking = true;
@@ -8587,7 +8587,7 @@ game::vmenu_ret game::list_items( const std::vector<map_item_stack> &item_list )
     std::optional<tripoint> trail_end;
     bool trail_end_x = false;
     shared_ptr_fast<draw_callback_t> trail_cb = create_trail_callback( trail_start, trail_end,
-            trail_end_x );
+        trail_end_x );
     add_draw_callback( trail_cb );
 
     do {
@@ -9103,7 +9103,7 @@ game::vmenu_ret game::list_monsters( const std::vector<Creature *> &monster_list
     std::optional<tripoint> trail_end;
     bool trail_end_x = false;
     shared_ptr_fast<draw_callback_t> trail_cb = create_trail_callback( trail_start, trail_end,
-            trail_end_x );
+        trail_end_x );
     add_draw_callback( trail_cb );
     const int recmax = static_cast<int>( monster_list.size() );
     const int scroll_rate = recmax > 20 ? 10 : 3;
@@ -9239,7 +9239,7 @@ static std::optional<input_event> get_initial_hotkey( const size_t menu_index )
 // There are options for optimization here, but the function is hit infrequently
 // enough that optimizing now is not a useful time expenditure.
 static std::vector<std::pair<map_stack::iterator, int>> generate_butcher_stack_display(
-            const std::vector<map_stack::iterator> &its )
+    const std::vector<map_stack::iterator> &its )
 {
     std::vector<std::pair<map_stack::iterator, int>> result;
     std::vector<std::string> result_strings;
@@ -10164,8 +10164,8 @@ bool game::check_safe_mode_allowed( bool repeat_safe_mode_warnings )
 
         const monster *const mon = most_frequent_mon.back();
         const std::string most_frequent_mon_text = colorize( most_frequent_mon.size() > 1 ?
-                string_format( "%d %s",
-                               most_frequent_mon.size(), mon->name( most_frequent_mon.size() ) ) : mon->name(), mon_color );
+            string_format( "%d %s",
+                           most_frequent_mon.size(), mon->name( most_frequent_mon.size() ) ) : mon->name(), mon_color );
 
         const std::string dist_text = min_dist == max_dist ?
                                       //~ %d: Distance to all monsters ("7")
@@ -10202,7 +10202,7 @@ bool game::check_safe_mode_allowed( bool repeat_safe_mode_warnings )
             //~ %s: Description of other monster count ("4 others"), %d: How many other monsters there are
             other_mon_text = string_format( _( " and %s" ),
                                             colorize( string_format( n_gettext( _( "%d other" ),  _( "%d others" ),
-                                                    other_mon_count ), other_mon_count ), mon_color ) );
+                                                other_mon_count ), other_mon_count ), mon_color ) );
         }
 
         //~ %1$s: Description of primary monster spotted ("3 fat zombies")
@@ -10600,7 +10600,7 @@ bool game::walk_move( const tripoint &dest_loc, const bool via_ramp, const bool 
     const int mcost_to = m.move_cost( dest_loc ); //calculate this _after_ calling grabbed_move
     const bool fungus = m.has_flag_ter_or_furn( ter_furn_flag::TFLAG_FUNGUS, u.pos() ) ||
                         m.has_flag_ter_or_furn( ter_furn_flag::TFLAG_FUNGUS,
-                                dest_loc ); //fungal furniture has no slowing effect on Mycus characters
+                            dest_loc ); //fungal furniture has no slowing effect on Mycus characters
     const bool slowed = ( ( !u.has_proficiency( proficiency_prof_parkour ) && ( mcost_to > 2 ||
                             mcost_from > 2 ) ) ||
                           mcost_to > 4 || mcost_from > 4 ) ||
